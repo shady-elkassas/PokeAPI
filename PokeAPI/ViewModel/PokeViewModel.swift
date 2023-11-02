@@ -154,13 +154,13 @@ class PokeViewModel:ObservableObject{
                 return data
             }
             .decode(type: PokemonSpecies.self, decoder: JSONDecoder())
-            .map { species in
+            .map { [weak self] species in
                 let colorName = species.color.name
                
                 
                 // Set the color property of the corresponding Pokemon
-                self.PokemonColors[pokemon.id] = self.getColorFromName(colorName: colorName)
-                self.saveDataToUserDefaults()
+                self?.PokemonColors[pokemon.id] = self?.getColorFromName(colorName: colorName)
+                self?.saveDataToUserDefaults()
                 
             }
             .catch { _ in Empty<Void, Never>() }
@@ -257,6 +257,7 @@ class PokeViewModel:ObservableObject{
                         return pokemon
                     }
                     .replaceError(with: pokemon)
+                   
             }
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -288,29 +289,29 @@ class PokeViewModel:ObservableObject{
             .map(\.data)  // Extract the data from the response
             .decode(type: TypeModel.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
+            .sink(receiveCompletion: { [weak self] completion in
                 switch completion {
                 case .failure(let error):
-                    self.fetchPokemonByAbility(abilityName: typeName)
+                    self?.fetchPokemonByAbility(abilityName: typeName)
                     print("Error: \(error)")
                 case .finished:
-                    print("API request completed successfully for page \(self.currentPageType)")
-                    if let total = self.totalPagesType, self.currentPageType < total {
+                    print("API request completed successfully for page \(self?.currentPageType)")
+                    if let total = self?.totalPagesType, self?.currentPageType ?? 1 < total {
                         // Fetch the next page if available
-                        self.currentPageType += 1
+                        self?.currentPageType += 1
                        
                     }
                 }
-            }, receiveValue: { typeModel in
-                if self.totalPagesType == nil {
+            }, receiveValue: { [weak self] typeModel in
+                if self?.totalPagesType == nil {
                     // Calculate the total pages based on the total number of Pokemon types
-                    self.totalPagesType = (typeModel.pokemon.count + limit - 1) / limit
+                    self?.totalPagesType = (typeModel.pokemon.count + limit - 1) / limit
                 }
                 let pokemons = typeModel.pokemon
                 print("Number of pokemons is: \(typeModel.pokemon.count)")
                 for pokemon in pokemons {
                     let name = pokemon.pokemon.name
-                    self.fetchPokemonInfoByName(name: name)
+                    self?.fetchPokemonInfoByName(name: name)
                 }
             })
             .store(in: &cancellables)
@@ -328,28 +329,28 @@ class PokeViewModel:ObservableObject{
             .map(\.data)  // Extract the data from the response
             .decode(type: TypeModel.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
+            .sink(receiveCompletion: { [weak self] completion in
                 switch completion {
                 case .failure(let error):
                     
                     print("Error: \(error)")
                 case .finished:
-                    print("API request completed successfully for page \(self.currentPageAbility)")
-                    if let total = self.totalPagesAbility, self.currentPageAbility < total {
+                    print("API request completed successfully for page \(self?.currentPageAbility)")
+                    if let total = self?.totalPagesAbility, self?.currentPageAbility ?? 1 < total {
                         // Fetch the next page if available
-                        self.currentPageAbility += 1
+                        self?.currentPageAbility += 1
                        
                     }
                 }
-            }, receiveValue: { typeModel in
-                if self.totalPagesAbility == nil {
+            }, receiveValue: {  [weak self] typeModel in
+                if self?.totalPagesAbility == nil {
                     // Calculate the total pages based on the total number of Pokemon types
-                    self.totalPagesAbility = (typeModel.pokemon.count + limit - 1) / limit
+                    self?.totalPagesAbility = (typeModel.pokemon.count + limit - 1) / limit
                 }
                 let pokemons = typeModel.pokemon
                 for pokemon in pokemons {
                     let name = pokemon.pokemon.name
-                    self.fetchPokemonInfoByName(name: name)
+                    self?.fetchPokemonInfoByName(name: name)
                 }
             })
             .store(in: &cancellables)

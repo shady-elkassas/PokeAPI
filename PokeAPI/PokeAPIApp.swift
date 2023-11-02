@@ -9,9 +9,16 @@ import SwiftUI
 
 @main
 struct PokeAPIApp: App {
+    
+    @StateObject var viewModel: PokeViewModel = PokeViewModel()
+    
     var body: some Scene {
+       
+     
+        
         WindowGroup {
-            ContentView()
+            MainView()
+                .environmentObject(viewModel)
         }
     }
 }

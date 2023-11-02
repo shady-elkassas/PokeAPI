@@ -2,6 +2,17 @@
 
 A simple SwiftUI app that allows you to browse and explore information about various Pokémon, including their names, types, abilities, and moves.
 
+## Screenshots
+
+- List
+<p align="center">
+  <img src="https://github.com/shady-elkassas/PokeAPI/blob/main/images/list.png" width="30%">
+</p>
+
+- Details
+<p align="center">
+  <img src="https://github.com/shady-elkassas/PokeAPI/blob/main/images/details.png" width="30%">
+</p>
 
 ## Features
 

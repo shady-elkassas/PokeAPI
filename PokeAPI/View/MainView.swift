@@ -77,10 +77,11 @@ struct MainView: View {
                 //Search field and button
                 HStack {
                     
-                    TextField("Search a Pokémon", text: $searchText)
+                    TextField("", text: $searchText, prompt: Text("Search a Pokémon").foregroundColor(.black.opacity(0.5)))
                         .padding(11)
                         .padding(.horizontal, 20)
                         .background(Color.white)
+                        .foregroundColor(.black)
                         .cornerRadius(8)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
@@ -156,10 +157,10 @@ struct MainView: View {
                             Text("Load More")
                                 .font(.custom("ClabPersonalUse-Regular", size: 18))
                                 .frame(width: width, height: 42, alignment: .center)
-                                .foregroundColor(.black)
+                                .foregroundColor(colorScheme == .light ? .black:.white)
                                 .overlay {
                                     RoundedRectangle(cornerRadius: 30)
-                                        .stroke(Color.black, lineWidth: 1)
+                                        .stroke(colorScheme == .light ? .black:.white, lineWidth: 1)
                                 }.padding()
                             
                             
@@ -175,7 +176,7 @@ struct MainView: View {
                                 .foregroundColor(.black)
                                 .overlay {
                                     RoundedRectangle(cornerRadius: 30)
-                                        .stroke(Color.black, lineWidth: 1)
+                                        .stroke(colorScheme == .light ? .black:.white, lineWidth: 1)
                                 }.padding()
                             
                         }
